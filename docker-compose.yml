@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: umay-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-umay_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-umay_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-umay_user} -d ${POSTGRES_DB:-umay_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - umay-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: umay-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - umay-network
+
+  backend:
+    image: signorali/umay-backend:1.0.0
+    container_name: umay-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-umay_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-umay_db}
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./storage:/app/storage
+      - ./backups:/app/backups
+    networks:
+      - umay-network
+
+  frontend:
+    image: signorali/umay-frontend:1.0.0
+    container_name: umay-frontend
+    restart: unless-stopped
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8000/api/v1}
+    ports:
+      - "${FRONTEND_PORT:-1880}:80"
+    depends_on:
+      - backend
+    networks:
+      - umay-network
+
+volumes:
+  postgres_data:
+
+networks:
+  umay-network:
+    driver: bridge
