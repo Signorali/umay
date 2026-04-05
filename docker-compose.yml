@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-umay_user} -d ${POSTGRES_DB:-umay_db}"]
-      interval: 10s
+      interval: 10sh
       timeout: 5s
       retries: 5
     networks:
@@ -40,7 +40,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-umay_user}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-umay_db}
       REDIS_URL: redis://redis:6379/0
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      - "${BACKEND_PORT:-1923}:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -59,7 +59,7 @@ services:
     environment:
       REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8000/api/v1}
     ports:
-      - "${FRONTEND_PORT:-1880}:80"
+      - "${FRONTEND_PORT:-1881}:80"
     depends_on:
       - backend
     networks:
