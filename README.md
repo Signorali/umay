@@ -86,7 +86,7 @@ Key configuration variables (see `.env.example` for full list):
 - Email support
 - Regular updates
 
-Get a license key at [umay.io/pricing](https://umay.io/pricing)
+Get a license key at [github.com/Signorali/umay](https://github.com/Signorali/umay)
 
 ## Documentation
 
@@ -126,8 +126,8 @@ MIT License - See [LICENSE](./LICENSE) file for details
 ## Support
 
 - Issues: [GitHub Issues](https://github.com/Signorali/umay/issues)
-- Email: support@umay.io
-- Documentation: [docs.umay.io](https://docs.umay.io)
+- Email: alikoken@outlook.com
+- Documentation: [github.com/Signorali/umay](https://github.com/Signorali/umay)
 
 ## Contributing
 
