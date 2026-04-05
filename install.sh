@@ -17,7 +17,7 @@ NC='\033[0m'
 
 REPO_URL="https://github.com/Signorali/umay.git"
 INSTALL_DIR="umay"
-APP_PORT=1880
+APP_PORT=1881
 
 echo -e "\n${BLUE}================================================${NC}"
 echo -e "${BLUE}   Umay - Financial Management System${NC}"
@@ -103,8 +103,8 @@ ADMIN_PASSWORD=$ADMIN_PASSWORD
 DEFAULT_TENANT_NAME=$TENANT_NAME
 DEFAULT_TENANT_SLUG=default
 FRONTEND_PORT=$APP_PORT
-BACKEND_PORT=8000
-REACT_APP_API_URL=http://localhost:8000/api/v1
+BACKEND_PORT=1923
+REACT_APP_API_URL=http://localhost:1923/api/v1
 EOF
 
 mkdir -p storage backups
@@ -121,7 +121,7 @@ fi
 # ---- Hazır olmasını bekle ----
 echo -e "\n${YELLOW}Backend hazır olana kadar bekleniyor (max 60s)...${NC}"
 for i in $(seq 1 60); do
-    if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
+    if curl -sf http://localhost:1923/health > /dev/null 2>&1; then
         echo -e "${GREEN}✓ Backend hazır!${NC}"
         break
     fi
