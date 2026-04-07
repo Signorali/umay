@@ -15,13 +15,13 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-REPO_URL="https://github.com/Signorali/umay.git"
 INSTALL_DIR="umay"
 APP_PORT=1881
+COMPOSE_URL="https://raw.githubusercontent.com/Signorali/umay/main/docker-compose.yml"
 
 echo -e "\n${BLUE}================================================${NC}"
 echo -e "${BLUE}   Umay - Financial Management System${NC}"
-echo -e "${BLUE}   v2.0.0 Installation${NC}"
+echo -e "${BLUE}   v2.0.1 Installation${NC}"
 echo -e "${BLUE}================================================${NC}\n"
 
 # ---- Gereksinim kontrolleri ----
@@ -41,11 +41,11 @@ if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/
 fi
 echo -e "${GREEN}✓ Docker Compose kurulu${NC}"
 
-if ! command -v git &> /dev/null; then
-    echo -e "${RED}✗ Git kurulu değil.${NC}"
+if ! command -v curl &> /dev/null; then
+    echo -e "${RED}✗ curl kurulu değil.${NC}"
     exit 1
 fi
-echo -e "${GREEN}✓ Git: $(git --version)${NC}\n"
+echo -e "${GREEN}✓ curl mevcut${NC}\n"
 
 # ---- Kullanıcı bilgileri ----
 echo -e "${YELLOW}Yönetici bilgilerini girin:${NC}"
@@ -78,33 +78,37 @@ JWT_SECRET=$(openssl rand -base64 32)
 DB_PASSWORD=$(openssl rand -base64 16 | tr -d '=/+')
 echo -e "${GREEN}✓ Anahtarlar oluşturuldu${NC}\n"
 
-# ---- Repo klonla ----
+# ---- Kurulum dizini ----
 if [ -d "$INSTALL_DIR" ]; then
-    echo -e "${YELLOW}Mevcut kurulum güncelleniyor...${NC}"
-    cd "$INSTALL_DIR" && git pull && cd ..
+    echo -e "${YELLOW}Mevcut kurulum dizini bulundu, güncelleniyor...${NC}"
 else
-    echo -e "${YELLOW}Repository indiriliyor...${NC}"
-    git clone "$REPO_URL" "$INSTALL_DIR"
+    mkdir -p "$INSTALL_DIR"
 fi
 cd "$INSTALL_DIR"
+
+# ---- docker-compose.yml indir ----
+echo -e "${YELLOW}docker-compose.yml indiriliyor...${NC}"
+curl -fsSL "$COMPOSE_URL" -o docker-compose.yml
+echo -e "${GREEN}✓ docker-compose.yml hazır${NC}"
 
 # ---- .env oluştur ----
 echo -e "${YELLOW}.env dosyası oluşturuluyor...${NC}"
 cat > .env << EOF
-APP_SECRET=$APP_SECRET
-JWT_SECRET=$JWT_SECRET
-POSTGRES_USER=umay_user
+APP_SECRET_KEY=$APP_SECRET
+JWT_SECRET_KEY=$JWT_SECRET
+POSTGRES_USER=umay
 POSTGRES_PASSWORD=$DB_PASSWORD
-POSTGRES_DB=umay_db
-DATABASE_URL=postgresql://umay_user:$DB_PASSWORD@postgres:5432/umay_db
+POSTGRES_DB=umay
+DATABASE_URL=postgresql+asyncpg://umay:$DB_PASSWORD@postgres:5432/umay
 REDIS_URL=redis://redis:6379/0
-ADMIN_EMAIL=$ADMIN_EMAIL
-ADMIN_PASSWORD=$ADMIN_PASSWORD
+FIRST_ADMIN_EMAIL=$ADMIN_EMAIL
+FIRST_ADMIN_PASSWORD=$ADMIN_PASSWORD
 DEFAULT_TENANT_NAME=$TENANT_NAME
 DEFAULT_TENANT_SLUG=default
 FRONTEND_PORT=$APP_PORT
 BACKEND_PORT=1923
-REACT_APP_API_URL=http://localhost:1923/api/v1
+APP_ENV=production
+APP_VERSION=2.0.1
 EOF
 
 mkdir -p storage backups
@@ -113,20 +117,22 @@ echo -e "${GREEN}✓ Yapılandırma hazır${NC}\n"
 # ---- Servisleri başlat ----
 echo -e "${YELLOW}Servisler başlatılıyor...${NC}"
 if docker compose version &> /dev/null 2>&1; then
+    docker compose pull
     docker compose up -d
 else
+    docker-compose pull
     docker-compose up -d
 fi
 
 # ---- Hazır olmasını bekle ----
-echo -e "\n${YELLOW}Backend hazır olana kadar bekleniyor (max 60s)...${NC}"
-for i in $(seq 1 60); do
+echo -e "\n${YELLOW}Backend hazır olana kadar bekleniyor (max 90s)...${NC}"
+for i in $(seq 1 90); do
     if curl -sf http://localhost:1923/health > /dev/null 2>&1; then
-        echo -e "${GREEN}✓ Backend hazır!${NC}"
+        echo -e "\n${GREEN}✓ Backend hazır!${NC}"
         break
     fi
-    if [ $i -eq 60 ]; then
-        echo -e "${RED}✗ Backend başlatılamadı. Logları kontrol edin: docker compose logs backend${NC}"
+    if [ $i -eq 90 ]; then
+        echo -e "\n${RED}✗ Backend başlatılamadı. Logları kontrol edin: docker compose logs backend${NC}"
         exit 1
     fi
     printf "."
