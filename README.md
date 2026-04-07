@@ -4,15 +4,32 @@ Umay is a powerful, modern financial management system designed for personal and
 
 ## Features
 
-- 📊 **Dashboard** - Real-time financial overview
-- 💳 **Transaction Management** - Track income and expenses
-- 💰 **Account Management** - Multiple accounts support
+- 📊 **Dashboard** - Real-time financial overview with live clock and planned payment chart
+- 💳 **Transaction Management** - Track income and expenses with 5-day edit window
+- 💰 **Account Management** - Multiple accounts support with inline editing
+- 📅 **Planned Payments** - Schedule and execute payments with group-based notifications
 - 📈 **Investments** - Portfolio tracking and analysis
 - 📋 **Budgeting** - Plan and monitor spending
-- 📄 **Reports** - Detailed financial reports
+- 📄 **Reports** - Detailed financial reports with category breakdown
+- 🔔 **Notifications** - Daily payment due alerts, overdue tracking
 - 🔒 **Security** - Ed25519 encrypted license system
 - 🌐 **Multi-tenant** - Support for multiple organizations
 - ☁️ **Cloud Ready** - Docker and Docker Compose support
+
+## Changelog
+
+### v2.0.0 (2026-04-07)
+- Dashboard yenilendi: canlı saat ve planlı ödemeler 8 haftalık bar grafiği
+- Harcama Dağılımı grafiği mevcut ay bazlı gösteriyor
+- Planlı Ödemeler: varsayılan sıralama yakın tarihe göre, ödeme modalı iyileştirildi
+- İşlemler ve Planlı Ödemeler için 5 günlük silme kuralı
+- Ödeme günü bildirimleri (grup bazlı, günlük 08:00)
+- Admin yönetim sayfaları Ayarlar altında toplandı
+- Hesap bilgileri düzenlenebilir (accounts.update izni gerektirir)
+- Roller sayfası arayüzü iyileştirildi
+
+### v1.0.0 (2026-04-05)
+- İlk kararlı sürüm
 
 ## Quick Start
 
@@ -74,7 +91,7 @@ Key configuration variables (see `.env.example` for full list):
 
 ## Licensing
 
-### Free Version (v1.0.0)
+### Free Version (v2.0.0)
 - Unlimited transactions
 - 2-user limit (trial)
 - 30-day trial period

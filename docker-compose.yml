@@ -32,7 +32,7 @@ services:
       - umay-network
 
   backend:
-    image: signorali/umay-backend:1.0.0
+    image: signorali/umay-backend:2.0.0
     container_name: umay-backend
     restart: unless-stopped
     env_file: .env
@@ -53,7 +53,7 @@ services:
       - umay-network
 
   frontend:
-    image: signorali/umay-frontend:1.0.0
+    image: signorali/umay-frontend:2.0.0
     container_name: umay-frontend
     restart: unless-stopped
     environment:

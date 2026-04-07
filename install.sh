@@ -21,7 +21,7 @@ APP_PORT=1881
 
 echo -e "\n${BLUE}================================================${NC}"
 echo -e "${BLUE}   Umay - Financial Management System${NC}"
-echo -e "${BLUE}   v1.0.0 Installation${NC}"
+echo -e "${BLUE}   v2.0.0 Installation${NC}"
 echo -e "${BLUE}================================================${NC}\n"
 
 # ---- Gereksinim kontrolleri ----
