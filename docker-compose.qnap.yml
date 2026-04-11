@@ -1,0 +1,112 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Umay — Müşteri Kurulum Dosyası (QNAP / Self-Hosted)
+# İmajlar Docker Hub'dan çekilir (signorali/umay-*).
+# Güncelleme için: Settings → System → Güncelle butonunu kullanın.
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: umay_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-umay}
+      POSTGRES_USER: ${POSTGRES_USER:-umay}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - /share/CACHEDEV1_DATA/Container/umay/data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-umay} -d ${POSTGRES_DB:-umay}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - umay_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: umay_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - /share/CACHEDEV1_DATA/Container/umay/data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - umay_net
+
+  backend:
+    image: signorali/umay-backend:latest
+    container_name: umay_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db
+      REDIS_HOST: redis
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /share/CACHEDEV1_DATA/Container/umay/data/storage:/app/storage
+      - /share/CACHEDEV1_DATA/Container/umay/data/backups:/app/backups
+    ports:
+      - "18080:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8000/api/v1/health/live || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - umay_net
+
+  frontend:
+    image: signorali/umay-frontend:latest
+    container_name: umay_frontend
+    restart: unless-stopped
+    ports:
+      - "1880:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - umay_net
+
+  # worker:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   image: umay-backend:local
+  #   container_name: umay_worker
+  #   restart: unless-stopped
+  #   command: ["arq", "app.worker.WorkerSettings"]
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     POSTGRES_HOST: db
+  #     REDIS_HOST: redis
+  #   volumes:
+  #     - /share/CACHEDEV1_DATA/Container/umay/data/storage:/app/storage
+  #     - /share/CACHEDEV1_DATA/Container/umay/data/backups:/app/backups
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - umay_net
+
+networks:
+  umay_net:
+    driver: bridge

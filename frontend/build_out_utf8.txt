@@ -1,0 +1,40 @@
+﻿
+> umay-frontend@0.1.0 build
+> tsc && vite build
+
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32mÔ£ô[39m 919 modules transformed.
+node.exe : [31mx[39m Build failed in 2.21s
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([31mx[39m Build failed in 2.21s:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[31merror during build:
+[31msrc/pages/DashboardPage.tsx (10:21): "WidthProvider" is not exported by "node_modules/react-grid-layout/dist/index
+.mjs", imported by "src/pages/DashboardPage.tsx".[31m
+file: [36mE:/Antigravity/frontend/src/pages/DashboardPage.tsx:10:21[31m
+[33m
+ 8: import { dashboardApi, transactionsApi, categoriesApi, marketApi, plannedPaymentsApi, accountsApi } from '../api/um
+ay'
+ 9: // @ts-ignore
+10: import GridLayout, { WidthProvider, Layout } from "react-grid-layout"
+                         ^
+11: import "react-grid-layout/css/styles.css"
+12: import "react-resizable/css/styles.css"
+[31m
+    at getRollupError (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/parseAst.js:406:41)
+    at error (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/parseAst.js:402:42)
+    at Module.error (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:17065:16)
+    at Module.traceVariable (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:17477:29)
+    at ModuleScope.findVariable (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:15090
+:39)
+    at Identifier.bind (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:5450:40)
+    at CallExpression.bind (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:2832:23)
+    at CallExpression.bind (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:12199:15)
+    at VariableDeclarator.bind (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:2832:2
+3)
+    at VariableDeclaration.bind (file:///E:/Antigravity/frontend/node_modules/rollup/dist/es/shared/node-entry.js:2828:
+28)[39m

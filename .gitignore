@@ -1,0 +1,71 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Node
+node_modules/
+dist/
+.pnp
+.pnp.js
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.docker/
+
+# Logs
+*.log
+logs/
+
+# Storage / Uploads
+backend/storage/
+backend/backups/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/
+
+# Sync metadata
+.sync/
+
+# Sensitive env files
+.env.qnap
+.env.update-server
+
+# License manager build artifacts
+license_manager/build/
+license_manager/dist/
+license_manager/__pycache__/
+
+# Local scripts
+deploy.ps1
+release.ps1
+
+# Mobile app (separate repo)
+mobil uygulama/

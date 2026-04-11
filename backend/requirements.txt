@@ -1,0 +1,66 @@
+# Web framework
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+
+# Database
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# Validation & settings
+pydantic==2.10.3
+pydantic-settings==2.6.1
+pydantic[email]==2.10.3
+email-validator==2.2.0
+
+# Auth
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.20
+
+# Redis
+redis[hiredis]==5.2.1
+
+# Background jobs (ARQ — async job queue on Redis)
+arq==0.26.1
+
+# HTTP client (internal calls, health checks)
+httpx==0.28.1
+
+# Market data (yfinance — stocks, forex, crypto)
+yfinance==0.2.41
+
+# Market data scraping (legacy)
+aiohttp==3.11.11
+beautifulsoup4==4.12.3
+
+# Utilities
+python-dateutil==2.9.0
+pytz==2024.2
+
+# Rate limiting (brute force protection)
+slowapi==0.1.9
+
+# Email / SMTP (cloud.md §21 — notification foundation)
+aiosmtplib==3.0.2
+
+# Backup encryption (cloud.md §8.15 — encrypted backup)
+cryptography>=42.0.0,<44.0.0
+
+# MFA / TOTP (cloud.md §14 — "support for MFA later")
+pyotp==2.9.0
+qrcode[pil]==7.4.2
+
+# Google Calendar OAuth2 integration
+google-auth==2.38.0
+google-auth-oauthlib==1.2.1
+google-api-python-client==2.165.0
+
+# Microsoft Graph / Outlook OAuth2
+msal==1.32.0
+
+# Factory reset — sync DB connection for schema drop/recreate
+psycopg2-binary==2.9.10
+
+# Docker SDK — self-update via Docker socket
+docker>=7.0.0

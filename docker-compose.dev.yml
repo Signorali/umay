@@ -1,0 +1,21 @@
+version: "3.9"
+
+# Local development override
+# Runs ONLY infrastructure: PostgreSQL + Redis
+# Backend and frontend run on the host machine (outside Docker)
+#
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# Then locally:
+#   cd backend  ->  uvicorn app.main:app --reload --port 8000
+#   cd frontend ->  npm run dev
+
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"

@@ -1,0 +1,73 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Umay Registry & Update Server
+# Klasör: /share/CACHEDEV1_DATA/Container/umay-update/
+#
+# Kurulum:
+#   cd /share/CACHEDEV1_DATA/Container/umay-update
+#   docker compose up -d
+#
+# QNAP Application Portal reverse proxy:
+#   /v2/     → http://localhost:5000   (Docker Registry)
+#   /update/ → http://localhost:8090   (Update API)
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  registry:
+    image: registry:2
+    container_name: umay_registry
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: "Umay Registry"
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+    volumes:
+      - /share/CACHEDEV1_DATA/Container/umay-update/registry/data:/data
+      - /share/CACHEDEV1_DATA/Container/umay-update/registry/auth:/auth
+    networks:
+      - umay_update_net
+
+  update-server:
+    build:
+      context: ./update-server
+    image: umay-update-server:latest
+    container_name: umay_update_server
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      LICENSE_PUBLIC_KEY: ${LICENSE_PUBLIC_KEY}
+      REGISTRY_PULL_USER: ${REGISTRY_PULL_USER:-puller}
+      REGISTRY_PULL_PASS: ${REGISTRY_PULL_PASS}
+      REGISTRY_HOST: ${REGISTRY_HOST:-koken.myqnapcloud.com}
+    volumes:
+      - /share/CACHEDEV1_DATA/Container/umay-update/versions:/app/versions
+    networks:
+      - umay_update_net
+
+  nginx:
+    build:
+      context: ./update-server/nginx
+    image: umay-nginx:latest
+    container_name: umay_nginx
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      # QNAP Let's Encrypt sertifikaları — yol sabit, sertifika yenilenince otomatik yüklenir
+      - /mnt/HDA_ROOT/.config/QcloudSSLCertificate/cert:/certs:ro
+    depends_on:
+      - registry
+      - update-server
+    networks:
+      - umay_update_net
+
+networks:
+  umay_update_net:
+    driver: bridge

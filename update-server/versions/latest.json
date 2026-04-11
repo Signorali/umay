@@ -1,0 +1,6 @@
+{
+  "version": "1.0.17",
+  "released_at": "2026-04-11",
+  "min_plan": "starter",
+  "changelog": ["Güncelleme sistemi: container label tabanlı lookup","Versiyon numarası artık .env dosyasından etkilenmiyor","Yedek geri yükleme sonrası migration ve container restart","İzin seed race condition düzeltmesi","Geri bildirim butonu eklendi"]
+}
